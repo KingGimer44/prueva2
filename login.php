@@ -1,14 +1,17 @@
 <?php
 session_start();
+require_once 'Singleton.php';
+require_once 'NegocioEmpleado.php';
+
+$conexion = Singleton::getInstance()->getConexion();
+$negocioEmpleado = new NegocioEmpleado($conexion);
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $usuario = $_POST['usuario'];
     $contrasena = $_POST['contrasena'];
 
-    // Conexión a la base de datos
-    $conexion = new mysqli("185.232.14.52", "u760464709_brise_o_usr", "4O$;&qE~e", "u760464709_brise_o_bd");;
-    $resultado = $conexion->query("SELECT * FROM empleados WHERE usuario='$usuario' AND contrasena='$contrasena'");
-
-    if ($resultado->num_rows > 0) {
+    // Verificar credenciales usando NegocioEmpleado
+    if ($negocioEmpleado->verificarCredenciales($usuario, $contrasena)) {
         $_SESSION['empleado'] = $usuario;
         header("Location: index.php");
     } else {
@@ -37,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <input type="text" name="usuario" placeholder="Usuario" required>
                 <input type="password" name="contrasena" placeholder="Contraseña" required>
                 <button type="submit">Iniciar Sesión</button>
+                <a href="registro.php"><button type="button">Crear Nuevo Empleado</button></a>
             </form>
         </div>
     </main>
