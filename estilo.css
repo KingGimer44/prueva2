@@ -216,12 +216,12 @@ main {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 300px; /* Ajusta el ancho según sea necesario */
+    width: 300px;
     transition: border-color 0.3s;
 }
 
 .busqueda-input:focus {
-    border-color: #007bff; /* Cambia el color del borde al enfocar */
+    border-color: #007bff;
     outline: none;
 }
 
@@ -237,31 +237,31 @@ main {
 }
 
 .busqueda-boton:hover {
-    background-color: #0056b3; /* Color al pasar el mouse */
+    background-color: #0056b3; 
 }
 
 .menu {
     display: flex;
-    align-items: center; /* Alinea verticalmente los elementos */
-    justify-content: space-between; /* Espacia los elementos */
+    align-items: center; 
+    justify-content: space-between; 
 }
 
 .busqueda-container {
-    flex-grow: 1; /* Permite que el contenedor de búsqueda ocupe el espacio disponible */
+    flex-grow: 1;
     display: flex;
-    justify-content: center; /* Centra el contenido dentro del contenedor */
+    justify-content: center; 
 }
 
 .busqueda-input {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 300px; /* Ajusta el ancho según sea necesario */
+    width: 300px;
     transition: border-color 0.3s;
 }
 
 .busqueda-input:focus {
-    border-color: #007bff; /* Cambia el color del borde al enfocar */
+    border-color: #007bff;
     outline: none;
 }
 
@@ -277,5 +277,5 @@ main {
 }
 
 .busqueda-boton:hover {
-    background-color: #0056b3; /* Color al pasar el mouse */
+    background-color: #0056b3;
 }
