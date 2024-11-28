@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $contrasena = $_POST['contrasena'];
 
     // Conexión a la base de datos
-    $conexion = new mysqli("localhost", "root", "", "medicina");;
+    $conexion = new mysqli("185.232.14.52", "u760464709_brise_o_usr", "4O$;&qE~e", "u760464709_brise_o_bd");;
     $resultado = $conexion->query("SELECT * FROM empleados WHERE usuario='$usuario' AND contrasena='$contrasena'");
 
     if ($resultado->num_rows > 0) {
