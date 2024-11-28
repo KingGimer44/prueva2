@@ -38,9 +38,14 @@ class Medicamento {
     }
 
     public function agregarMedicamento($nombre, $descripcion, $cantidad, $imagen) {
-        // Preparar la consulta para insertar un nuevo medicamento
         $stmt = $this->conexion->prepare("INSERT INTO medicamentos (nombre, descripcion, cantidad, imagen) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssis", $nombre, $descripcion, $cantidad, $imagen);
+        return $stmt->execute();
+    }
+
+    public function eliminar($id) {
+        $stmt = $this->conexion->prepare("DELETE FROM medicamentos WHERE id = ?");
+        $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
 }
@@ -73,6 +78,11 @@ class NegocioMedicamento {
     public function modificarMedicamento($id, $nombre, $descripcion, $cantidad, $imagen = null) {
         $medicamento = new Medicamento($this->conexion);
         return $medicamento->actualizar($id, $nombre, $descripcion, $cantidad, $imagen);
+    }
+
+    public function eliminarMedicamento($id) {
+        $medicamento = new Medicamento($this->conexion);
+        return $medicamento->eliminar($id);
     }
 }
 ?>
