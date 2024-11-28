@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $carpetaDestino = "imagenes/";
 
     if (move_uploaded_file($rutaTemporal, $carpetaDestino . $nombreImagen)) {
-        $conexion = new mysqli("localhost", "root", "", "medicina");
+        $conexion = new mysqli("185.232.14.52", "u760464709_brise_o_usr", "4O$;&qE~e", "u760464709_brise_o_bd");
         
         $conexion->query("INSERT INTO medicamentos (nombre, descripcion, cantidad, imagen) VALUES ('$nombre', '$descripcion', '$cantidad', '$nombreImagen')");
 
