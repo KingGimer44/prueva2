@@ -5,7 +5,7 @@ class Singleton {
     private $conexion;
 
     private function __construct() {
-        $this->conexion = new mysqli('localhost', 'root', '', 'medicina');
+        $this->conexion = new mysqli('185.232.14.52', 'u760464709_brise_o_usr', '4O$;&qE~e', 'u760464709_brise_o_bd');
         
         if ($this->conexion->connect_error) {
             die("Conexión fallida: " . $this->conexion->connect_error);
