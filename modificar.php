@@ -1,11 +1,13 @@
 <?php
 session_start();
+require_once 'NegocioMedicamento.php';
+
 if (!isset($_SESSION['empleado'])) {
     header("Location: login.php");
     exit();
 }
 
-$conexion = new mysqli("185.232.14.52", "u760464709_brise_o_usr", "4O$;&qE~e", "u760464709_brise_o_bd");
+$negocioMedicamento = new NegocioMedicamento();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
@@ -16,16 +18,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($imagen) {
         move_uploaded_file($_FILES['imagen']['tmp_name'], "imagenes/$imagen");
-        $conexion->query("UPDATE medicamentos SET nombre='$nombre', descripcion='$descripcion', cantidad='$cantidad', imagen='$imagen' WHERE id='$id'");
+
+        $resultado = $negocioMedicamento->modificarMedicamento($id, $nombre, $descripcion, $cantidad, $imagen);
     } else {
-        $conexion->query("UPDATE medicamentos SET nombre='$nombre', descripcion='$descripcion', cantidad='$cantidad' WHERE id='$id'");
+
+        $resultado = $negocioMedicamento->modificarMedicamento($id, $nombre, $descripcion, $cantidad);
     }
 
-    header("Location: index.php");
+    if ($resultado) {
+        header("Location: index.php");
+    } else {
+        echo "Error al modificar el medicamento.";
+    }
 } else {
     $id = $_GET['id'];
-    $resultado = $conexion->query("SELECT * FROM medicamentos WHERE id='$id'");
-    $medicamento = $resultado->fetch_assoc();
+    $medicamento = $negocioMedicamento->obtenerMedicamentoPorId($id);
 }
 ?>
 
@@ -37,22 +44,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
 <header>
-        <nav>
-            <div class="logo"><h1>Modificar Medicamento</h1></div>
-            <div class="menu">
-                <a href="index.php"><button>Inventario</button></a>
-            </div>
-        </nav>
-    </header>
-    <div class="worker-section">
-        <form method="post" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="<?php echo $medicamento['id']; ?>">
-            <input type="text" name="nombre" value="<?php echo $medicamento['nombre']; ?>" required>
-            <textarea name="descripcion" required><?php echo $medicamento['descripcion']; ?></textarea>
-            <input type="number" name="cantidad" value="<?php echo $medicamento['cantidad']; ?>" required>
-            <input type="file" name="imagen">
-            <button type="submit">Modificar</button>
-        </form>
-    </div>
+    <nav>
+        <div class="logo"><h1>Modificar Medicamento</h1></div>
+        <div class="menu">
+            <a href="index.php"><button>Inventario</button></a>
+        </div>
+    </nav>
+</header>
+<div class="worker-section">
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="<?php echo $medicamento['id']; ?>">
+        <input type="text" name="nombre" value="<?php echo $medicamento['nombre']; ?>" required>
+        <textarea name="descripcion" required><?php echo $medicamento['descripcion']; ?></textarea>
+        <input type="number" name="cantidad" value="<?php echo $medicamento['cantidad']; ?>" required>
+        <input type="file" name="imagen">
+        <button type="submit">Modificar</button>
+    </form>
+</div>
 </body>
 </html>
