@@ -1,5 +1,4 @@
 <?php
-// archivo: domingo/test2/Medicamento.php
 
 require_once 'Medic.php';
 
