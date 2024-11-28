@@ -5,7 +5,7 @@ if (!isset($_SESSION['empleado'])) {
     exit();
 }
 
-$conexion = new mysqli("localhost", "root", "", "medicina");
+$conexion = new mysqli("185.232.14.52", "u760464709_brise_o_usr", "4O$;&qE~e", "u760464709_brise_o_bd");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
