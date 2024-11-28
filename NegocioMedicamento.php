@@ -36,6 +36,13 @@ class Medicamento {
         }
         return $stmt->execute();
     }
+
+    public function agregarMedicamento($nombre, $descripcion, $cantidad, $imagen) {
+        // Preparar la consulta para insertar un nuevo medicamento
+        $stmt = $this->conexion->prepare("INSERT INTO medicamentos (nombre, descripcion, cantidad, imagen) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssis", $nombre, $descripcion, $cantidad, $imagen);
+        return $stmt->execute();
+    }
 }
 
 class NegocioMedicamento {
@@ -56,6 +63,16 @@ class NegocioMedicamento {
         } else {
             return null;
         }
+    }
+
+    public function agregarMedicamento($nombre, $descripcion, $cantidad, $imagen) {
+        $medicamento = new Medicamento($this->conexion);
+        return $medicamento->agregarMedicamento($nombre, $descripcion, $cantidad, $imagen);
+    }
+
+    public function modificarMedicamento($id, $nombre, $descripcion, $cantidad, $imagen = null) {
+        $medicamento = new Medicamento($this->conexion);
+        return $medicamento->actualizar($id, $nombre, $descripcion, $cantidad, $imagen);
     }
 }
 ?>
