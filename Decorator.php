@@ -1,5 +1,4 @@
 <?php
-// archivo: domingo/test2/MedicamentoDecorator.php
 
 require_once 'Medic.php';
 
@@ -15,7 +14,7 @@ class Decorator implements Medic {
     }
 
     public function obtenerPrecioConDescuento() {
-        return $this->obtenerPrecio() * 0.9; // Aplicar un 10% de descuento
+        return $this->obtenerPrecio() * 0.9;
     }
 }
 ?>
