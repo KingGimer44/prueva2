@@ -1,53 +1,63 @@
 <?php
 session_start();
-require_once 'Singleton.php';
-require_once 'NegocioEmpleado.php';
+require_once 'NegocioMedicamento.php';
 
-$conexion = Singleton::getInstance()->getConexion();
-$negocioEmpleado = new NegocioEmpleado($conexion);
+if (!isset($_SESSION['empleado'])) {
+    header("Location: login.php");
+    exit();
+}
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $usuario = $_POST['usuario'] ?? '';
-    $contrasena = $_POST['contrasena'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $nombre = $_POST['nombre'];
+    $descripcion = $_POST['descripcion'];
+    $cantidad = $_POST['cantidad'];
 
-    if ($usuario && $contrasena) {
-        $resultado = $negocioEmpleado->registrarEmpleado($usuario, $contrasena);
+    $nombreImagen = $_FILES['imagen']['name'];
+    $rutaTemporal = $_FILES['imagen']['tmp_name'];
+    $carpetaDestino = "imagenes/";
+
+    if (move_uploaded_file($rutaTemporal, $carpetaDestino . $nombreImagen)) {
+
+        $negocioMedicamento = new NegocioMedicamento();
+
+        $resultado = $negocioMedicamento->agregarMedicamento($nombre, $descripcion, $cantidad, $nombreImagen);
+
         if ($resultado) {
-            $_SESSION['empleado'] = $usuario;
             header("Location: index.php");
-            exit();
         } else {
-            $mensaje = "Error al registrar el empleado.";
+            echo "Error al agregar el medicamento.";
         }
     } else {
-        $mensaje = "Por favor, complete todos los campos.";
+        echo "Error al subir la imagen.";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="estilo.css">
-    <title>Registro de Empleado</title>
+    <title>Agregar Medicamento</title>
 </head>
 <body>
     <header>
-        <h1>Registro de Empleado</h1>
+        <nav>
+            <div class="logo"><h1>Agregar Medicamento</h1></div>
+            <div class="menu">
+                <a href="index.php"><button>Inventario</button></a>
+            </div>
+        </nav>
     </header>
     <main>
         <div class="worker-section">
-            <form method="POST" action="">
-                <input type="text" name="usuario" placeholder="Usuario" required>
-                <input type="password" name="contrasena" placeholder="Contraseña" required>
-                <button type="submit">Registrar</button>
-                <a href="login.php"><button type="button">Volver a Iniciar Sesión</button></a>
+            <form method="post" enctype="multipart/form-data">
+                <input type="text" name="nombre" placeholder="Nombre del medicamento" required>
+                <textarea name="descripcion" placeholder="Descripción médica" required></textarea>
+                <input type="number" name="cantidad" placeholder="Cantidad en stock" required>
+                <input type="file" name="imagen" required>
+                <button type="submit">Agregar</button>
             </form>
-            <?php if (isset($mensaje)): ?>
-                <p><?php echo htmlspecialchars($mensaje); ?></p>
-            <?php endif; ?>
         </div>
     </main>
 </body>
