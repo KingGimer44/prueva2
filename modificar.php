@@ -12,10 +12,10 @@ $commandService = new MedicamentoCommandService();
 $queryService = new MedicamentoQueryService();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = $_POST['id'];
-    $nombre = $_POST['nombre'];
-    $descripcion = $_POST['descripcion'];
-    $cantidad = $_POST['cantidad'];
+    $id = $_POST['id'] ?? null;
+    $nombre = $_POST['nombre'] ?? '';
+    $descripcion = $_POST['descripcion'] ?? '';
+    $cantidad = $_POST['cantidad'] ?? 0;
     $imagen = !empty($_FILES['imagen']['name']) ? $_FILES['imagen']['name'] : null;
 
     if ($imagen) {
@@ -32,9 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     header("Location: index.php");
+    exit();
 }
 
-$id = $_GET['id'];
+$id = $_GET['id'] ?? null;
 $medicamento = $queryService->obtenerPorId($id);
 ?>
 
@@ -55,17 +56,17 @@ $medicamento = $queryService->obtenerPorId($id);
 </header>
 <div class="worker-section">
     <form method="post" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="<?php echo $medicamento['id']; ?>">
-        <input type="text" name="nombre" value="<?php echo $medicamento['nombre']; ?>" required>
-        <textarea name="descripcion" required><?php echo $medicamento['descripcion']; ?></textarea>
-        <input type="number" name="cantidad" value="<?php echo $medicamento['cantidad']; ?>" required>
+        <input type="hidden" name="id" value="<?php echo $medicamento['id'] ?? ''; ?>">
+        <input type="text" name="nombre" value="<?php echo $medicamento['nombre'] ?? ''; ?>" required>
+        <textarea name="descripcion" required><?php echo $medicamento['descripcion'] ?? ''; ?></textarea>
+        <input type="number" name="cantidad" value="<?php echo $medicamento['cantidad'] ?? 0; ?>" required>
         <input type="file" name="imagen">
         <button type="submit" name="modificar">Modificar</button>
     </form>
 </div>
 <div class="delete">
     <form method="post" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="<?php echo $medicamento['id']; ?>">
+        <input type="hidden" name="id" value="<?php echo $medicamento['id'] ?? ''; ?>">
         <button type="submit" name="eliminar" class="delete-btn">Borrar</button>
     </form>
 </div>
