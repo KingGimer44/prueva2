@@ -1,48 +1,41 @@
 <?php
 session_start();
-require_once 'NegocioMedicamento.php';
+require_once 'MedicamentoLee.php';
+require_once 'MedicamentoEscribe.php';
 
 if (!isset($_SESSION['empleado'])) {
     header("Location: login.php");
     exit();
 }
 
-$negocioMedicamento = new NegocioMedicamento();
+$commandService = new MedicamentoCommandService();
+$queryService = new MedicamentoQueryService();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['modificar'])) { 
-        $id = $_POST['id'];
-        $nombre = $_POST['nombre'];
-        $descripcion = $_POST['descripcion'];
-        $cantidad = $_POST['cantidad'];
-        $imagen = $_FILES['imagen']['name'];
+    $id = $_POST['id'];
+    $nombre = $_POST['nombre'];
+    $descripcion = $_POST['descripcion'];
+    $cantidad = $_POST['cantidad'];
+    $imagen = !empty($_FILES['imagen']['name']) ? $_FILES['imagen']['name'] : null;
 
-        if ($imagen) {
-            move_uploaded_file($_FILES['imagen']['tmp_name'], "imagenes/$imagen");
-            $resultado = $negocioMedicamento->modificarMedicamento($id, $nombre, $descripcion, $cantidad, $imagen);
-        } else {
-            $resultado = $negocioMedicamento->modificarMedicamento($id, $nombre, $descripcion, $cantidad);
-        }
-
-        if ($resultado) {
-            header("Location: index.php");
-        } else {
-            echo "Error al modificar el medicamento.";
-        }
-    } elseif (isset($_POST['eliminar'])) { 
-        $id = $_POST['id'];
-        $resultado = $negocioMedicamento->eliminarMedicamento($id);
-        
-        if ($resultado) {
-            header("Location: index.php");
-        } else {
-            echo "Error al eliminar el medicamento.";
-        }
+    if ($imagen) {
+        move_uploaded_file($_FILES['imagen']['tmp_name'], "imagenes/$imagen");
+        $commandService->actualizarMedicamento($id, $nombre, $descripcion, $cantidad, $imagen);
+    } else {
+        $commandService->actualizarMedicamento($id, $nombre, $descripcion, $cantidad, null);
     }
-} else {
-    $id = $_GET['id'];
-    $medicamento = $negocioMedicamento->obtenerMedicamentoPorId($id);
+
+    if (isset($_POST['eliminar'])) {
+        $commandService->eliminarMedicamento($id);
+        header("Location: index.php");
+        exit();
+    }
+
+    header("Location: index.php");
 }
+
+$id = $_GET['id'];
+$medicamento = $queryService->obtenerPorId($id);
 ?>
 
 <!DOCTYPE html>
