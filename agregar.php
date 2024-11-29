@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once 'NegocioMedicamento.php';
+require_once 'MedicamentoLee.php';
+require_once 'MedicamentoEscribe.php';
 
 if (!isset($_SESSION['empleado'])) {
     header("Location: login.php");
@@ -18,9 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (move_uploaded_file($rutaTemporal, $carpetaDestino . $nombreImagen)) {
 
-        $negocioMedicamento = new NegocioMedicamento();
+        $commandService = new MedicamentoCommandService();
 
-        $resultado = $negocioMedicamento->agregarMedicamento($nombre, $descripcion, $cantidad, $nombreImagen);
+        $resultado = $commandService->agregarMedicamento($nombre, $descripcion, $cantidad, $nombreImagen);
 
         if ($resultado) {
             header("Location: index.php");
