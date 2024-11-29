@@ -1,21 +1,36 @@
 <?php
 session_start();
+require_once 'MedicamentoLee.php';
+require_once 'MedicamentoEscribe.php';
 require_once 'Singleton.php';
-require_once 'NegocioMedicamento.php';
 require_once 'Configuracion.php';
 require_once 'facade.php';
 require_once 'sujeto.php';
 require_once 'observer.php';
 require_once 'observercon.php';
 
+$queryService = new MedicamentoQueryService();
 
-$conexion = Singleton::getInstance()->getConexion();
-$medicamentoNegocio = new medicamento($conexion);
+$medicamentos = $queryService->obtenerTodos();
 
-$inventarioFacade = new InventarioFacade($medicamentoNegocio);
+$config = Configuracion::getInstance();
+$nombreSitio = $config->get('Inventario de Medicamentos');
+
+$busqueda = isset($_POST['busqueda']) ? $_POST['busqueda'] : '';
+
+if ($busqueda) {
+    $medicamentos = array_filter($medicamentos, function($medicamento) use ($busqueda) {
+        return stripos($medicamento['nombre'], $busqueda) !== false;
+    });
+}
+
+$mensajeNotificacion = "Se han encontrado " . count($medicamentos) . " medicamentos.";
+
 
 $observador1 = new ConcreteObserver("Observador 1");
 $observador2 = new ConcreteObserver("Observador 2");
+
+$inventarioFacade = new InventarioFacade($queryService);
 $inventarioFacade->agregarObservador($observador1);
 $inventarioFacade->agregarObservador($observador2);
 
@@ -27,10 +42,8 @@ $nombreSitio = $config->get('Inventario de Medicamentos');
 $inventario = new InventarioFacade();
 $medicamentos = $inventario->obtenerTodosLosMedicamentos();
 
-// Verificar si hay una búsqueda
 $busqueda = isset($_POST['busqueda']) ? $_POST['busqueda'] : '';
 
-// Filtrar medicamentos si hay una búsqueda
 if ($busqueda) {
     $medicamentos = array_filter($medicamentos, function($medicamento) use ($busqueda) {
         return stripos($medicamento['nombre'], $busqueda) !== false;
@@ -104,7 +117,7 @@ $mensajeNotificacion = "Se han encontrado " . count($medicamentos) . " medicamen
             }, 3000);
         }
 
-        mostrarNotificacion(mensaje, 5000);
+        mostrarNotificacion(mensaje);
     </script>
 </body>
 </html>
